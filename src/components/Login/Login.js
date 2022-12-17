@@ -1,4 +1,5 @@
 import React, { useState,useEffect } from 'react';
+
 import Card from '../UI/Card/Card';
 import classes from './Login.module.css';
 import Button from '../UI/Button/Button';
@@ -13,12 +14,32 @@ const Login = (props) => {
   const [formIsValid, setFormIsValid] = useState(false);
 
   useEffect(() => {
-    
-    setFormIsValid(
-      enteredEmail.includes('@') && enteredPassword.trim().length > 6 && enteredCollegeName.trim().length > 0
-    );
+    console.log("use effect running")//only run when this component function is executed initially and unmounted from the DOM(which menas deleted from the screen(once we logged in))
 
-  }, [  enteredEmail,enteredPassword,enteredCollegeName])
+    return () => {
+      console.log("cleaned upp")//this would run when this component is removed from the unmount from the DOM(which means once logged in is succcess)and
+                                //also will run when this component render initially because we didnt mention anything as dependency
+   }
+  },[])
+
+  useEffect(() => {
+   const identifier = setTimeout( () => {
+      console.log('checking form validity')//this will run once we type anything on input field and chnange the state according to the below condtion 
+                                          //Since we are using timeout over here we clean up function would collect all the unneccesary check after each 0.5
+                                          //milli second and clear that time out and it will check only after we finish typing(or will take a break on typing)
+                                          //and 'checking form validity' only run after we finsh typing because this will execute after every clean up function and we could say vise-versa
+      setFormIsValid(
+        enteredEmail.includes('@') && enteredPassword.trim().length > 6 && enteredCollegeName.trim().length > 0
+      );
+    },500)
+    
+    
+   return () => {
+    console.log('CLEANED UPP')
+    clearTimeout(identifier)
+   }
+
+  }, [enteredEmail,enteredPassword,enteredCollegeName])
 
   const emailChangeHandler = (event) => {
     setEnteredEmail(event.target.value);
@@ -46,7 +67,7 @@ const Login = (props) => {
 
   const submitHandler = (event) => {
     event.preventDefault();
-    props.onLogin(enteredEmail, enteredPassword);
+    props.onLogin(enteredEmail, enteredPassword, enteredCollegeName);
   };
 
   return (
