@@ -1,4 +1,4 @@
-import React, { useState, useReducer } from 'react';
+import React, { useState, useEffect, useReducer } from 'react';
 
 import Card from '../UI/Card/Card';
 import classes from './Login.module.css';
@@ -38,40 +38,43 @@ const Login = (props) => {
   const [emailState, dispatchEmail] =  useReducer(emailReducer,{value: '', isValid: null,})
   const [passwordState, dispatchPassword] = useReducer(passwordReducer,{value:'', isValid: null,})
 
-  // useEffect(() => {
-  //   console.log("use effect running")//only run when this component function is executed initially and unmounted from the DOM(which menas deleted from the screen(once we logged in))
+  useEffect(() => {
+    console.log("use effect running")//only run when this component function is executed initially and unmounted from the DOM(which menas deleted from the screen(once we logged in))
 
-  //   return () => {
-  //     console.log("cleaned upp")//this would run when this component is removed from the unmount from the DOM(which means once logged in is succcess)and
-  //                               //also will run when this component render initially because we didnt mention anything as dependency
-  //  }
-  // },[])
+    return () => {
+      console.log("cleaned upp")//this would run when this component is removed from the unmount from the DOM(which means once logged in is succcess)and
+                                //also will run when this component render initially because we didnt mention anything as dependency
+   }
+  },[])
 
-  // useEffect(() => {
-  //  const identifier = setTimeout( () => {
-  //     console.log('checking form validity')//this will run once we type anything on input field and chnange the state according to the below condtion 
-  //                                         //Since we are using timeout over here we clean up function would collect all the unneccesary check after each 0.5
-  //                                         //milli second and clear that time out and it will check only after we finish typing(or will take a break on typing)
-  //                                         //and 'checking form validity' only run after we finsh typing because this will execute after every clean up function and we could say vise-versa
-  //     setFormIsValid(
-  //       enteredEmail.includes('@') && enteredPassword.trim().length > 6 && enteredCollegeName.trim().length > 0
-  //     );
-  //   },500)
+  const {isValid: emailIsValid } = emailState;
+  const {isValid: passwordIsValid} = passwordState
+
+  useEffect(() => {
+   const identifier = setTimeout( () => {
+      console.log('checking form validity')//this will run once we type anything on input field and chnange the state according to the below condtion 
+                                          //Since we are using timeout over here we clean up function would collect all the unneccesary check after each 0.5
+                                          //milli second and clear that time out and it will check only after we finish typing(or will take a break on typing)
+                                          //and 'checking form validity' only run after we finsh typing because this will execute after every clean up function and we could say vise-versa
+      setFormIsValid(
+        emailIsValid && passwordIsValid && enteredCollegeName.trim().length > 0
+      );
+    },500)
     
     
-  //  return () => {
-  //   console.log('CLEANED UPP')
-  //   clearTimeout(identifier)
-  //  }
+   return () => {
+    console.log('CLEANED UPP')
+    clearTimeout(identifier)
+   }
 
-  // }, [enteredEmail,enteredPassword,enteredCollegeName])
+  }, [emailIsValid,passwordIsValid,enteredCollegeName])
 
   const emailChangeHandler = (event) => {
     dispatchEmail({type: 'USER_INPUT', val: event.target.value});
 
-    setFormIsValid(
-      event.target.value.includes('@')&& passwordState.isValid && enteredCollegeName.trim().length > 0
-    );
+    // setFormIsValid(
+    //   event.target.value.includes('@')&& passwordState.isValid && enteredCollegeName.trim().length > 0
+    // );
 
   };
 
@@ -87,9 +90,9 @@ const Login = (props) => {
     // setEnteredPassword(event.target.value);
     dispatchPassword({type:'INPUT_PASSWORD', value: event.target.value})
 
-    setFormIsValid(
-      emailState.isValid && event.target.value.trim().length > 6 && enteredCollegeName
-    );
+    // setFormIsValid(
+    //   emailState.isValid && event.target.value.trim().length > 6 && enteredCollegeName
+    // );
   };
   
   const validateEmailHandler = () => {
