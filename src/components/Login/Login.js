@@ -1,10 +1,9 @@
-import React, { useState, useEffect, useReducer, useContext } from 'react';
-
+import React, { useState, useEffect, useReducer, useContext } from 'react'
 import Card from '../UI/Card/Card';
 import classes from './Login.module.css';
 import Button from '../UI/Button/Button';
 import AuthContext from '../../store/auth-context';
-
+import Input from '../UI/Input/Input';
 const emailReducer = (state, action) => {
   if(action.type === 'USER_INPUT') {
     return {value: action.val, isValid: action.val.includes('@') } 
@@ -118,20 +117,17 @@ const Login = (props) => {
   return (
     <Card className={classes.login}>
       <form onSubmit={submitHandler}>
-        <div
-          className={`${classes.control} ${
-            emailState.isValid === false ? classes.invalid : ''
-          }`}
-        >
-          <label htmlFor="email">E-Mail</label>
-          <input
+    
+          <Input
+            label="E-mail"
+            htmlFor="email"
             type="email"
             id="email"
             value={emailState.value}
             onChange={emailChangeHandler}
             onBlur={validateEmailHandler}
           />
-        </div>
+        
         <div className={`${classes.control} ${
           collegeNameIsValid === false ? classes.invalid : ''}`}>
           <label htmlFor="collegeName">College Name</label>
@@ -143,20 +139,16 @@ const Login = (props) => {
             onBlur={validateCollegeNameHandler}
           />
           </div>
-        <div
-          className={`${classes.control} ${
-            passwordState.isValid === false ? classes.invalid : ''
-          }`}
-        >
-          <label htmlFor="password">Password</label>
-          <input
-            type="password"
-            id="password"
+        
+        <Input
+            label="Password"
+            htmlFor="Password"
+            type="Password"
+            id="Password"
             value={passwordState.value}
             onChange={passwordChangeHandler}
             onBlur={validatePasswordHandler}
           />
-        </div>
         <div className={classes.actions}>
           <Button type="submit" className={classes.btn} disabled={!formIsValid}>
             Login
